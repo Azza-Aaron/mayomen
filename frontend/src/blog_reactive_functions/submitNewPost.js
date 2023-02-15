@@ -9,5 +9,4 @@ export const submitNewPost = async (fields) => {
   };
   await fetch(`/api/blogposts`, requestOptions)
     .catch(err => console.log(err))
-  alert(fields.header + fields.date + fields.body)
 }

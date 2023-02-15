@@ -40,12 +40,23 @@ export function AddPost({getPosts}) {
   )
 }
 
-export async function editPost(e) {
-  console.log(e.target.id)
+export async function editPostFromServer() {
   console.log(`edit post clicked`)
 }
 
-export async function deletePost(e) {
-  console.log(e.target.id)
-  console.log(`delete post clicked`)
+export async function deletePostFromServer(id) {
+  console.log(`delete post clicked, initiating delete`)
+  const elementId = {
+    id: id
+  }
+  const requestOptions = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(elementId)
+  };
+  await fetch(`/api/blogposts`, requestOptions)
+    .catch(err => console.log(err))
+  console.log(id, `should be delete`)
 }

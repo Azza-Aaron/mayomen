@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
-import {AddPost, editPost, deletePost} from "../../blog_reactive_functions/addEditDelete";
+import {AddPost, editPost, deletePost, deletePostFromServer} from "../../blog_reactive_functions/addEditDelete";
 // import {newEntry} from "../../blog_reactive_functions/submitNewPost";
+import {EditModal} from "../../blog_reactive_functions/modal";
 
 function BlogBody() {
   const [post, setPost] = useState([])
   const [showInput, setShowInput] = useState(false)
-
+  const [showModal, setShowModal] = useState(false)
+  const [idForEdit, setIdForEdit] = useState('')
   const getPosts = async () => {
     setPost([])
     const get = await fetch(`/api/blogposts`)
@@ -15,6 +17,19 @@ function BlogBody() {
       setPost(postValues)
       setShowInput(false)
     }
+  }
+
+  const deletePost = (id) => {
+    deletePostFromServer(id)
+    const newList = post.filter((post) => post.id !==id);
+    setPost(newList)
+  }
+
+
+  const editPost = (id) => {
+    setIdForEdit(id)
+    setShowModal(!showModal)
+    //editPostFromServer(id)
   }
 
   useEffect( () => {
@@ -34,21 +49,17 @@ function BlogBody() {
     return (<h1>loading....</h1>)
   }
 
-  // const inputField = () => {
-  //   const fields = AddPost()
-  //   setInputFields(fields)
-  // }
-
-
-
   const postElements = post.map((post) => {
     return(
-      <li className="text-center PaleMayo p-3" key={post.id}>
+      <li className="text-center PaleMayo p-3" key={post.id} id={post.id}>
         <h2 >{post.header}</h2>
         <p >{post.date}</p>
         <h4 >{post.body}</h4>
         <div className="btn-group btn-group-toggle" data-toggle="buttons">
-        <button id={post.id} className={"btn btn-dark"} onClick={editPost}>Edit</button><button id={post.id}  className={"btn btn-dark"} onClick={deletePost}>Delete</button>
+        <button id={post.id} className={"btn btn-dark"}
+                onClick={() => editPost(post.id)}>Edit</button>
+        <button id={post.id} className={"btn btn-dark"}
+                onClick={() => deletePost(post.id)}>Delete</button>
         </div>
       </li>
     )
@@ -64,6 +75,9 @@ function BlogBody() {
         </div>
         <div className="col-9 align-self-center mt-3">
           <h1>My Blog</h1>
+          {
+            showModal ? <EditModal post ={post} id ={idForEdit} getPosts ={getPosts}/> : null
+          }
           <button className={"btn btn-dark"} onClick={() => {
             setShowInput(!showInput)
           }}>Add Post</button>

@@ -1,24 +1,63 @@
-export function EditModal() {
-  return(
-    <>
-      <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
-           aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              ...
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" className="btn btn-primary">Understood</button>
-            </div>
-          </div>
+import React from "react";
+import Modal from "react-bootstrap/Modal"
+import {editPostFromServer} from "./addEditDelete";
+import {editPostOnServer} from "./editPostOnServer";
+
+export function EditModal({post, id, getPosts}) {
+  let postNumber
+  for (let i = 0; i < post.length; i++) {
+    if (post[i].id === id) {
+      postNumber = i
+    }
+  }
+
+  let postTitle
+  let postDate
+  let postBody
+
+  const handleEdit = async (post, postTitle, postDate, postBody, id) => {
+    if(!postTitle && !postDate && !postBody) {
+      setIsOpen(false);
+      return;
+    }
+    const send = await editPostOnServer(post, postTitle, postDate, postBody, id)
+    console.log(send)
+    getPosts()
+    setIsOpen(false)
+  }
+
+  //// MODAL SHINANIGANS
+  const [isOpen, setIsOpen] = React.useState(true)
+  //{post[postNumber].body}
+  return (
+    <Modal show={isOpen}>
+      {isOpen ? <>
+          <Modal.Header>
+            <h3 contentEditable onBlur={(e) => postTitle = e.target.innerText}>{post[postNumber].header}</h3>
+          </Modal.Header>
+
+          <Modal.Body>
+            <p contentEditable onBlur={(e) => postDate = e.target.innerText}>{post[postNumber].date}</p>
+          <br/>
+            <div
+              className="input"
+              role="textbox"
+              contentEditable
+              onBlur={(e) => postBody = e.target.innerText}>
+              {post[postNumber].body}
+              </div>
+
+          </Modal.Body>
+      </> : null
+      }
+      <Modal.Footer>
+        <div className="btn-group btn-group-toggle" data-toggle="buttons">
+          <button className={"btn btn-dark"} onClick={() => {
+          setIsOpen(false)
+        }}>Cancel</button>
+          <button className={"btn btn-dark"} onClick={() => handleEdit(post, postTitle, postDate, postBody, id)}>Submit Changes</button>
         </div>
-      </div>
-    </>
-  )
+      </Modal.Footer>
+    </Modal>
+  );
 }

@@ -22,12 +22,6 @@ let post = [{
     id: "1"
   }]
 
-
-// // BLOG PAGE
-// router.get('/api/blogposts', (req, res) => {
-//   res.json({"posts": post})
-// })
-
 // route for getting all users
 router.get('/', (req,res) => {
   res.json({"posts": post})
@@ -35,7 +29,6 @@ router.get('/', (req,res) => {
 
 router.post("/", (req, res, next) => {
   try {
-    console.log(req.body)
     const newPost = {
       header: req.body.header,
       date: req.body.date,
@@ -45,7 +38,7 @@ router.post("/", (req, res, next) => {
     }
     post.push(newPost)
     console.log(`${req.body} pushed on server`)
-    res.json(req.body)
+    res.json(newPost.id)
   } catch (err) {
     console.log(err);
     res.status(500);
@@ -53,21 +46,40 @@ router.post("/", (req, res, next) => {
   }
 });
 
-// route for getting one user
-router.get('/:id', (req,res) => {
-  res.send(req.params.id)
-})
-// route for creating a user
-router.post('/', (req,res) => {
-
-})
 // route for updating a user
-router.patch('/:id', (req,res) => {
+router.patch('/', (req,res) => {
+  try {
+    for (let i = 0; i < post.length; i++) {
+      if(post[i].id === req.body.id){
+        post[i].header = req.body.header
+        post[i].date = req.body.date
+        post[i].body = req.body.body
+        break
+      }
+    }
+    res.json('post updated')
+  } catch (err) {
+    console.log(err);
+    res.status(500);
+    res.send({ err: "something went wrong" });
+  }
+});
 
-})
 // route for deleting a user
-router.delete('/:id', (req,res) => {
-
-})
+router.delete('/', (req,res) => {
+  try {
+    for (let i = 0; i < post.length; i++) {
+      if(post[i].id === req.body.id){
+        post.splice(i, 1)
+        break
+      }
+    }
+    res.json('post deleted')
+  } catch (err) {
+    console.log(err);
+    res.status(500);
+    res.send({ err: "something went wrong" });
+  }
+});
 
 module.exports = router
