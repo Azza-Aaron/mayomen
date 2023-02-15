@@ -1,0 +1,40 @@
+.PaleMayo {
+    color: antiquewhite;
+    font-family: "Roboto Regular", "Times New Roman", "Arial Black", serif;
+    text-align: center;
+}
+
+.largerText {
+    font-size: 24px;
+}
+
+.divMiddle {
+    width: 600px;
+    margin: auto;
+}
+
+.divMiddleWider {
+    width: 700px;
+    margin: auto;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+#ancientMayo {
+    margin-top: 80px;
+}
+
+#mayoBowl {
+    margin-top: 250px;
+}
+
+#root {
+    background: black;
+}
+
+body {
+    background: black;
+}
