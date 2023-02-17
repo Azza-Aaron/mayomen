@@ -24,21 +24,28 @@ let post = [{
 
 // route for getting all users
 router.get('/', (req,res) => {
-  res.json({"posts": post})
+  res.json({posts: post})
 })
 
-router.post("/", (req, res, next) => {
+// api/blogposts/:id <- get one id
+router.get('/:id', (req,res) => {
+  const id = req.params.id; // api/blogposts/1
+  //res.json({posts: post})
+})
+
+router.post('/', (req, res) => {
   try {
     const newPost = {
-      header: req.body.header,
+      header: req.body.header, //SQL injection
       date: req.body.date,
       body: req.body.body,
       image: "not yet",
-      id: "3 or more"
+      id: post.length + 1 //incrementing number
     }
     post.push(newPost)
     console.log(`${req.body} pushed on server`)
-    res.json(newPost.id)
+    res.status(201);
+    res.json({id: newPost.id})
   } catch (err) {
     console.log(err);
     res.status(500);
@@ -49,36 +56,46 @@ router.post("/", (req, res, next) => {
 // route for updating a user
 router.patch('/', (req,res) => {
   try {
-    for (let i = 0; i < post.length; i++) {
-      if(post[i].id === req.body.id){
-        post[i].header = req.body.header
-        post[i].date = req.body.date
-        post[i].body = req.body.body
-        break
-      }
+    console.log({post, body: req.body})
+    let postIndex = post.findIndex(aPost => aPost.id === req.body.id);
+
+    if(postIndex < 0) {
+      res.status(400);
+      res.json({msg: 'something went wrong'});
+      return;
     }
-    res.json('post updated')
+
+    const {header, id, date, body} = req.body;
+    post[postIndex] = {header, id, date, body};
+
+    res.status(200);
+    res.send('post updated')
   } catch (err) {
     console.log(err);
     res.status(500);
-    res.send({ err: "something went wrong" });
+    res.json({ err: "something went wrong" });
   }
 });
 
 // route for deleting a user
 router.delete('/', (req,res) => {
   try {
-    for (let i = 0; i < post.length; i++) {
-      if(post[i].id === req.body.id){
-        post.splice(i, 1)
-        break
-      }
+    console.log({body: req.body, post})
+    const index = post.findIndex(aPost => aPost.id === req.body.id);
+
+    if(index < 0) {
+      res.status(400);
+      res.json({msg: 'no'});
     }
-    res.json('post deleted')
+
+    //post.splice(index, 1); technically correct, but not often used
+    post = post.filter(aPost => aPost.id !== req.body.id);
+
+    res.send('post deleted')
   } catch (err) {
     console.log(err);
     res.status(500);
-    res.send({ err: "something went wrong" });
+    res.json({ err: "something went wrong" });
   }
 });
 

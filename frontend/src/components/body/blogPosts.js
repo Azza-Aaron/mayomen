@@ -9,19 +9,23 @@ function BlogBody() {
   const [showModal, setShowModal] = useState(false)
   const [idForEdit, setIdForEdit] = useState('')
   const getPosts = async () => {
-    setPost([])
+    //setPost([])
     const get = await fetch(`/api/blogposts`)
     const post = await get.json()
     if(post?.posts?.length){
       const postValues = Object.values(post.posts)
+        console.log({postValues})
       setPost(postValues)
       setShowInput(false)
     }
   }
 
+
+
   const deletePost = (id) => {
     deletePostFromServer(id)
-    const newList = post.filter((post) => post.id !==id);
+    const newList = post.filter((p) => p.id !== id);
+    console.log({newList, post})
     setPost(newList)
   }
 
@@ -76,7 +80,7 @@ function BlogBody() {
         <div className="col-9 align-self-center mt-3">
           <h1>My Blog</h1>
           {
-            showModal ? <EditModal post ={post} id ={idForEdit} getPosts ={getPosts}/> : null
+            showModal ? <EditModal post={post} id={idForEdit} getPosts={getPosts} setShowModal={setShowModal}/> : null
           }
           <button className={"btn btn-dark"} onClick={() => {
             setShowInput(!showInput)
