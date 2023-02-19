@@ -88,7 +88,7 @@ function BlogBody() {
         <div className="col-9 align-self-center mt-3">
           <h1>Regale me with Mayo</h1>
           {
-            showModal ? <EditModal post={post} id={idForEdit} getPosts={getPosts} setShowModal={setShowModal}/> : null
+            showModal ? <EditModal post={post} id={idForEdit} getPosts={getPosts} setShowModal={setShowModal} setPost={setPost}/> : null
           }
           <button className={"btn btn-dark"} onClick={() => {
             setShowInput(!showInput)

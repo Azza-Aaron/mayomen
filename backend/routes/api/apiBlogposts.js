@@ -50,7 +50,7 @@ router.get('/:id', (req,res) => {
 
 const postPreppedQuery = (newPost) => {
   return {
-    name: 'insert-new-post',
+    //name: 'insert-new-post',
     text: `INSERT INTO public.blog_posts (header, date, body)
                 VALUES ($1, $2, $3)
                 RETURNING id`,
@@ -73,21 +73,30 @@ router.post('/', async (req, res) => {
   res.json({msg: 'ok', id: rowId.id})
 })
 
-// route for updating a user
+
+// route for updating a post
+
+const editPreppedQuery = (newPost, thisId) => {
+  return {
+    //name: 'update-post',
+    text: `UPDATE public.blog_posts 
+    SET header=$1,  date=$2, body=$3
+    WHERE id=${thisId}`,
+    values: newPost
+  };
+};
+
 router.patch('/', (req,res) => {
   try {
-    console.log({post, body: req.body})
-    let postIndex = post.findIndex(aPost => aPost.id === req.body.id);
-
-    if(postIndex < 0) {
-      res.status(400);
-      res.json({msg: 'something went wrong'});
-      return;
-    }
-
-    const {header, id, date, body} = req.body;
-    post[postIndex] = {header, id, date, body};
-
+    console.log('updating post')
+    const thisId = req.body.id
+    const newPost = [
+      req.body.header,
+      req.body.date,
+      req.body.body,
+    ];
+    const sendPost = editPreppedQuery(newPost, thisId)
+    client.query(sendPost)
     res.status(200);
     res.send('post updated')
   } catch (err) {

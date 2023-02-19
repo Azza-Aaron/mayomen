@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal"
 import {editPostFromServer} from "./addEditDelete";
 import {editPostOnServer} from "./editPostOnServer";
 
-export function EditModal({post, id, getPosts, setShowModal}) {
+export function EditModal({post, id, getPosts, setShowModal, setPost}) {
   let singlePost = post.find(p => p.id === id);
 
   console.log({singlePost})
@@ -26,10 +26,16 @@ export function EditModal({post, id, getPosts, setShowModal}) {
       return;
     }*/
     const send = await editPostOnServer({...singlePost, ...details })
-    console.log({send})
-    getPosts()
+    console.log({details})
     setShowModal(false);
     setIsOpen(false)
+
+    let newList = []
+    newList = post.filter((p) => p.id !== id);
+    newList.push(details)
+    console.log('new list log in edit/update' ,newList)
+    setPost(newList)
+    console.log('post after set post', post)
   }
 
   //// MODAL SHINANIGANS
