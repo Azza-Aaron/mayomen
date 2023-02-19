@@ -38,3 +38,19 @@
 body {
     background: black;
 }
+
+.darker {
+    background: rgba(0,0,0,0.6);
+}
+
+.greenIsOk {
+    background: #2e442e;
+}
+
+.yellowIsOhNo {
+    background-color: #411201;
+}
+
+.black {
+    background: black;
+}

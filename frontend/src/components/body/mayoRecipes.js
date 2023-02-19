@@ -13,15 +13,26 @@ function PassRecipes() {
           return(
             <li className="text-center PaleMayo p-3" key={recipe.title}>
               <h1>Recipe of the day!</h1>
-              <h1>{recipe.title}</h1>
-              <h4>Ready in {recipe.readyInMinutes} Serves {recipe.servings}</h4>
-              <h4>Health-Score {recipe.healthScore}</h4>
-              <h3>Summary</h3>
-              <div dangerouslySetInnerHTML={ {__html: recipe.summary} }></div>
-              <h3>Lets get to it!</h3>
-              <div className={"text-center PaleMayo largerText"} dangerouslySetInnerHTML={ {__html: recipe.instructions}}></div>
-              <img src={recipe.image} className="img-fluid"/>
-              <p>Credit to { recipe.creditsText }</p>
+              <div className={"card text-white bg-dark mb-3 PaleMayo p-3 darker"}>
+                <div className={"card-header PaleMayo p-3 darker"}>
+                  <h2>{recipe.title}</h2>
+                  <h4 >Ready in {recipe.readyInMinutes} Serves {recipe.servings}</h4>
+                  <div className={"card-header PaleMayo p-3 darker"}>
+                    <h3>Summary</h3>
+                  </div>
+                  <div className={"card-body PaleMayo p-3 darker"}>
+                    <div dangerouslySetInnerHTML={ {__html: recipe.summary} }></div>
+                </div>
+                <div className={"card-header PaleMayo p-3 darker"}>
+                  <h3>Let's get to it!</h3>
+                </div>
+                <div className={"card-body PaleMayo p-3 darker"}>
+                  <div className={"text-center PaleMayo largerText"} dangerouslySetInnerHTML={ {__html: recipe.instructions}}></div>
+                  <img src={recipe.image} className="img-fluid"/>
+                  <p>Credit to { recipe.creditsText }</p>
+                </div>
+                </div>
+              </div>
             </li>
           )
         })

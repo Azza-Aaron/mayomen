@@ -2,19 +2,31 @@ import React, {useState} from "react";
 import moment from "moment";
 import {submitNewPost} from "./submitNewPost";
 
-export function AddPost({getPosts}) {
+export function AddPost({setShowInput, setPost, post}) {
   //use state for form fields
   const theDate = moment().format('D/MM/YYYY')
   const [fields, setFields] = useState({header: '', date: theDate, body: ''});
 
   const handleSubmit = async () =>  {
-    await submitNewPost(fields)
-    getPosts();
+    const newId = await submitNewPost(fields)
+    const newPostOnSubmit = {
+      header: fields.header,
+      date: fields.date,
+      body: fields.body,
+      id: newId
+    }
+    console.log(post)
+    let newList = post
+    newList.push(newPostOnSubmit)
+    console.log('new list log' ,newList)
+    setPost(newList)
+    console.log(post)
+    setShowInput(false)
   }
 
   console.log(`add post clicked`)
   return(
-    <li>
+    <li key={"inputs"}>
       <form onSubmit={(e) => e.preventDefault()}>
         <label>Post Title</label>
         <br/>
@@ -34,7 +46,7 @@ export function AddPost({getPosts}) {
                              onBlur={(e) => setFields({...fields, body: e.target.value})}
         ></textarea></label>
         <br/>
-        <button type="submit" value="Submit" id={"submit-inputs"} className={"btn btn-dark"} onClick={handleSubmit} >Submit</button>
+        <button type="submit" value="Submit" id={"submit-inputs"} className={"btn btn-dark"} onDoubleClick={handleSubmit} >Submit</button>
       </form>
     </li>
   )

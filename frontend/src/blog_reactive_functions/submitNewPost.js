@@ -1,5 +1,5 @@
 export const submitNewPost = async (fields) => {
-  console.log('fields: ', fields);
+  //console.log('fields: ', fields);
   const requestOptions = {
     method: 'POST',
     headers: {
@@ -7,6 +7,9 @@ export const submitNewPost = async (fields) => {
     },
     body: JSON.stringify(fields)
   };
-  await fetch(`/api/blogposts`, requestOptions)
+  const response = await fetch(`/api/blogposts`, requestOptions)
     .catch(err => console.log(err))
+  const data = await response.json()
+  //console.log('id to use is ',data.id)
+  return data.id
 }

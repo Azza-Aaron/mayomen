@@ -9,15 +9,17 @@ function BlogBody() {
   const [showModal, setShowModal] = useState(false)
   const [idForEdit, setIdForEdit] = useState('')
   const getPosts = async () => {
-    //setPost([])
-    const get = await fetch(`/api/blogposts`)
-    const post = await get.json()
-    if(post?.posts?.length){
-      const postValues = Object.values(post.posts)
-        console.log({postValues})
-      setPost(postValues)
-      setShowInput(false)
-    }
+  //setPost([])
+  const get = await fetch(`/api/blogposts`)
+  const post = await get.json()
+  if(post?.posts?.length){
+    const postValues = Object.values(post.posts)
+      console.log({postValues})
+    setPost(postValues)
+    setShowInput(false)
+  } else {
+    console.log('failed')
+  }
   }
 
 
@@ -56,14 +58,20 @@ function BlogBody() {
   const postElements = post.map((post) => {
     return(
       <li className="text-center PaleMayo p-3" key={post.id} id={post.id}>
-        <h2 >{post.header}</h2>
-        <p >{post.date}</p>
-        <h4 >{post.body}</h4>
-        <div className="btn-group btn-group-toggle" data-toggle="buttons">
-        <button id={post.id} className={"btn btn-dark"}
-                onClick={() => editPost(post.id)}>Edit</button>
-        <button id={post.id} className={"btn btn-dark"}
-                onClick={() => deletePost(post.id)}>Delete</button>
+        <div className={"card text-white bg-dark mb-3 PaleMayo p-3"}>
+          <div className={"card-header PaleMayo p-3 darker"}>
+            <h2>{post.header}</h2>
+            <p >{post.date}</p>
+          </div>
+          <div className={"card-body PaleMayo p-3 darker"}>
+            <h4 >{post.body}</h4>
+            <div className="btn-group btn-group-toggle" data-toggle="buttons">
+              <button id={post.id} className={"btn btn-dark PaleMayo p-3 darker"}
+                      onClick={() => editPost(post.id)}>Edit</button>
+              <button id={post.id} className={"btn btn-dark PaleMayo p-3 darker"}
+                      onClick={() => deletePost(post.id)}>Delete</button>
+            </div>
+          </div>
         </div>
       </li>
     )
@@ -74,18 +82,18 @@ function BlogBody() {
       <div className="row">
         <div className="col align-self-start">
           {
-            showInput ? <ul className={"list-unstyled"}> <AddPost getPosts={getPosts}/> </ul> : null
+            showInput ? <ul className={"list-unstyled"} key={"inputs-ul"}> <AddPost setShowInput={setShowInput} setPost={setPost} post={post}/> </ul> : null
           }
         </div>
         <div className="col-9 align-self-center mt-3">
-          <h1>My Blog</h1>
+          <h1>Regale me with Mayo</h1>
           {
             showModal ? <EditModal post={post} id={idForEdit} getPosts={getPosts} setShowModal={setShowModal}/> : null
           }
           <button className={"btn btn-dark"} onClick={() => {
             setShowInput(!showInput)
           }}>Add Post</button>
-          <ul className={"list-unstyled"}> { postElements } </ul>
+          <ul className={"list-unstyled"} key={'post-elements'}> { postElements } </ul>
         </div>
         <div className="col">
         </div>

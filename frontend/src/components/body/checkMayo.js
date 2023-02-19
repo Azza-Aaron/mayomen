@@ -18,50 +18,70 @@ function CheckMayoInput(){
     setAllInfo(allInfo)
     console.log(data)
   }
-  const {product_name, brands, countries, stores, compared_to_category, allergens} = allInfo.product || {}
-
+  let {product_name, brands, countries, stores, compared_to_category, allergens} = allInfo.product || {}
 
   return(
-    <div>
-      <h1 >Enter your mayo barcode for some details!</h1>
-      <h4 >(We have thousands on file (OMG!))</h4>
+    <>
+      <div>
+        <h1 >Enter your mayo barcode for some details!</h1>
+        <h4 >(We have thousands on file (OMG!))</h4>
 
-      <input id="check-input-el" value={input} onChange={e => setInput(e.target.value)}/>
-      <button className={"btn btn-dark"} onClick={productInformation}>Lookup Barcode!</button>
+        <input id="check-input-el" value={input} onChange={e => setInput(e.target.value)}/>
+        <button className={"btn btn-dark"} onClick={productInformation}>Lookup Barcode!</button>
 
-      <IsMayoCat
-        cat ={compared_to_category}
-        brands ={brands}
-        nopeMayo ={nopeMayo}
-        product_name ={product_name}
-      />
-      <h3 id="productInformation">{product_name ? `${product_name}` : "Ready set Mayo!"}</h3>
+        <IsMayoCat
+          cat ={compared_to_category}
+          brands ={brands}
+          nopeMayo ={nopeMayo}
+          product_name ={product_name}
+        />
 
-      {
-        countries ? <>
-                        <h2>Where can I get it?</h2>
-                        <h3>{ countries }</h3>
-                    </> : null
-      }
-      {
-        stores ? <>
-                    <h2>From what shops?</h2>
-                    <h3>{ stores }</h3>
-                </> : null
-      }
-      {
-        compared_to_category ? <>
-                                  <h2>Is it Mayo? Lets check the category...</h2>
-                                  <h3>{ compared_to_category }</h3>
-                              </> : null
-      }
-      {
-        allergens ? <>
-                      <h2>Allergen advice!</h2>
-                      <h3>{ allergens }</h3>
-                    </> : null
-      }
-    </div>
+        { brands?
+          <div className={"card text-white bg-dark mb-3 PaleMayo p-3 darker"}>
+            {
+              countries ? <>
+                <div className={"card-header PaleMayo p-3 darker"}>
+                  <h2>Where can I get it?</h2>
+                </div>
+                <div className={"card-body PaleMayo p-3 greenIsOk"}>
+                  <h3>{ countries.replaceAll(',', ', ').toUpperCase() }</h3>
+                </div>
+              </> : null
+            }
+            {
+              stores ? <>
+                <div className={"card-header PaleMayo p-3 darker"}>
+                  <h2>From what shops?</h2>
+                </div>
+                <div className={"card-body PaleMayo p-3 greenIsOk"}>
+                  <h3>{ stores.replaceAll(',', ', ').toUpperCase() }</h3>
+                </div>
+              </> : null
+            }
+            {
+              compared_to_category ? <>
+                <div className={"card-header PaleMayo p-3 darker"}>
+                  <h2>Lets check the category...</h2>
+                </div>
+                <div className={"card-body PaleMayo p-3 greenIsOk"}>
+                  <h3>{ compared_to_category.replaceAll('en:', '').toUpperCase() }</h3>
+                </div>
+              </> : null
+            }
+            {
+              allergens ? <>
+                <div className={"card-header PaleMayo p-3 darker"}>
+                  <h2>Allergen advice!</h2>
+                </div>
+                <div className={"card-body PaleMayo p-3 yellowIsOhNo"}>
+                  <h3>{ allergens.replaceAll('en:', ' ').toUpperCase() }</h3>
+                </div>
+              </> : null
+            }
+          </div> : null
+        }
+      </div>
+  </>
   )
 }
 
@@ -77,7 +97,23 @@ function IsMayoCat({cat, brands, nopeMayo, product_name}) {
     isItMayo =`Oh look, ${brands} brand`
   }
 
-  return <h2>{ isItMayo }</h2>
+  return (
+    <>
+
+      {
+        brands ? <div className={"card text-white bg-dark mb-3 PaleMayo p-3 black"}>
+                    <div className={"card-header PaleMayo p-3 black"}>
+                      <h2>{isItMayo}</h2>
+                    </div>
+                    <div className={"card-body PaleMayo p-3"}>
+                      <h3 id="productInformation">{product_name ? ` Looks like ${product_name}` : "Ready set Mayo!"}</h3>
+                    </div>
+                  </div> : null
+
+      }
+
+  </>
+  )
 }
 
 export {CheckMayoInput}
