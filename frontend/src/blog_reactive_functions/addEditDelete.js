@@ -8,6 +8,9 @@ export function AddPost({setShowInput, setPost, post}) {
   const [fields, setFields] = useState({header: '', date: theDate, body: ''});
 
   const handleSubmit = async () =>  {
+    if(!fields.header || !fields.date || !fields.body) {
+      return
+    }
     const newId = await submitNewPost(fields)
     const newPostOnSubmit = {
       header: fields.header,
@@ -46,7 +49,7 @@ export function AddPost({setShowInput, setPost, post}) {
                              onBlur={(e) => setFields({...fields, body: e.target.value})}
         ></textarea></label>
         <br/>
-        <button type="submit" value="Submit" id={"submit-inputs"} className={"btn btn-dark"} onDoubleClick={handleSubmit} >Submit</button>
+        <button type="submit" value="Submit" id={"submit-inputs"} className={"btn btn-dark"} onClick={handleSubmit} >Submit</button>
       </form>
     </li>
   )

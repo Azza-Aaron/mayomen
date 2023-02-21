@@ -16,9 +16,9 @@ client.connect();
 
 let posts = []
 
-// route for getting all users
+// route for getting all posts
 router.get('/', async (req,res) => {
-  const get = await client.query('SELECT * FROM public.blog_posts', async (err, res) => {
+  await client.query('SELECT * FROM public.blog_posts', async (err, res) => {
     if(!err){
       posts = []
       res.rows.map((post) => {
@@ -38,7 +38,7 @@ router.get('/', async (req,res) => {
   })
   // console.log('deconstruct header', posts)
   // console.log('rows sent')
-  res.send({posts: posts})
+  res.json({posts: posts})
 })
 
 // api/blogposts/:id <- get one id
@@ -106,11 +106,11 @@ router.patch('/', (req,res) => {
   }
 });
 
-// route for deleting a user
+
 router.delete('/', async (req,res) => {
   try {
     const reqId = req.body.id
-    const tryDelete = await client.query(
+    await client.query(
       `DELETE FROM public.blog_posts WHERE id = ${reqId}`)
     //console.log({body: req.body, post})
     //const index = post.findIndex(aPost => aPost.id === req.body.id);

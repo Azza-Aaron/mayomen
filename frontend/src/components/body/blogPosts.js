@@ -3,6 +3,8 @@ import {AddPost, editPost, deletePost, deletePostFromServer} from "../../blog_re
 // import {newEntry} from "../../blog_reactive_functions/submitNewPost";
 import {EditModal} from "../../blog_reactive_functions/modal";
 
+let retry = 1
+
 function BlogBody() {
   const [post, setPost] = useState([])
   const [showInput, setShowInput] = useState(false)
@@ -10,15 +12,31 @@ function BlogBody() {
   const [idForEdit, setIdForEdit] = useState('')
   const getPosts = async () => {
   //setPost([])
-  const get = await fetch(`/api/blogposts`)
-  const post = await get.json()
-  if(post?.posts?.length){
-    const postValues = Object.values(post.posts)
+  try {
+    const get = await fetch(`/api/blogposts`)
+    const post = await get.json()
+    if(post?.posts?.length){
+      const postValues = Object.values(post.posts)
       console.log({postValues})
-    setPost(postValues)
-    setShowInput(false)
-  } else {
-    console.log('failed')
+      setPost(postValues)
+      setShowInput(false)
+      retry = 1
+    } else {
+      console.log('retry')
+      if(retry < 500){
+        retry += 1
+        getPosts()
+      } else {
+        console.log('failed')
+      }
+    }
+  } catch {
+    if(retry < 500){
+      retry += 1
+      getPosts()
+    } else {
+      console.log('failed')
+    }
   }
   }
 
