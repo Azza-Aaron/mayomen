@@ -1,6 +1,8 @@
 const {grabRecipes} = require("./recipes.js")
 const express = require('express')
 const app = express()
+const mayoInfoRouter = require('./routes/api/apiBlogposts')
+const usersRouter = require('./routes/api/users')
 
 app.use(express.json())
 
@@ -8,9 +10,8 @@ app.use(express.json())
 //router for /api
 //move the pages into there own router
 
-const mayoInfoRouter = require('./routes/api/apiBlogposts')
 app.use('/api/blogposts', mayoInfoRouter)
-
+app.use('/api/users', usersRouter)
 
 
 // RECIPE PAGE

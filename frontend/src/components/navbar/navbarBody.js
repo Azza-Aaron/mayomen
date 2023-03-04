@@ -20,15 +20,8 @@ function MainNavbar() {
           <li className="nav-item">
             <a className="nav-link" href="/MakeMayo">Make My Mayo</a>
           </li>
-          <li className="nav-item dropdown">
-            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-              My Profile
-            </a>
-            <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a className="dropdown-item" href="#">Login</a>
-              <a className="dropdown-item" href="#">Account Settings</a>
-            </div>
+          <li className="nav-item">
+            <a className="nav-link" href="/loginpage">Login</a>
           </li>
         </ul>
       </div>

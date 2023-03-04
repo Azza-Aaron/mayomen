@@ -1,44 +1,19 @@
 const express = require('express');
 const router = express.Router();
-
-const {Client} = require("pg")
-
-const client = new Client({
-  user: "postgres",
-  host: "localhost",
-  database: "postgres",
-  password: "password",
-  port: 5432,
-})
-
-client.connect();
-
+const {getBlogPosts, createBlogPost, editBlogPosts, postDelete} = require('../../db/blog')
 
 let posts = []
 
 // route for getting all posts
 router.get('/', async (req,res) => {
-  await client.query('SELECT * FROM public.blog_posts', async (err, res) => {
-    if(!err){
-      posts = []
-      res.rows.map((post) => {
-        posts.push({
-          id: post.id,
-          header: post.header,
-          date: post.date,
-          body: post.body
-        })
-      })
-      //console.log(res.rows)
-      return res.rows
-    } else {
-      console.log(err.message)
-    }
-    client.end
-  })
-  // console.log('deconstruct header', posts)
-  // console.log('rows sent')
-  res.json({posts: posts})
+  try {
+    console.log('here')
+    posts = await getBlogPosts()
+    res.json({posts: posts})
+  } catch (e) {
+    console.log(e)
+    res.status(400)
+  }
 })
 
 // api/blogposts/:id <- get one id
@@ -47,16 +22,6 @@ router.get('/:id', (req,res) => {
   //res.send({posts: post})
 })
 
-
-const postPreppedQuery = (newPost) => {
-  return {
-    //name: 'insert-new-post',
-    text: `INSERT INTO public.blog_posts (header, date, body)
-                VALUES ($1, $2, $3)
-                RETURNING id`,
-    values: newPost
-  };
-};
 router.post('/', async (req, res) => {
   console.log('making new post')
   const newPost = [
@@ -64,39 +29,28 @@ router.post('/', async (req, res) => {
     req.body.date,
     req.body.body,
   ];
-  const sendPost = postPreppedQuery(newPost)
-  const dbRes = await client.query(sendPost)//.then((res) => res[0].id);
-  const rowId = dbRes.rows[0];
-  console.log(rowId.id);
-
-  res.status(200)
-  res.json({msg: 'ok', id: rowId.id})
+  try {
+    const result = await createBlogPost(newPost)
+    res.json({msg: 'ok', id: result.id})
+    res.status(200)
+  } catch (e) {
+    console.log(e)
+    res.status(400)
+  }
 })
 
 
 // route for updating a post
 
-const editPreppedQuery = (newPost, thisId) => {
-  return {
-    //name: 'update-post',
-    text: `UPDATE public.blog_posts 
-    SET header=$1,  date=$2, body=$3
-    WHERE id=${thisId}`,
-    values: newPost
-  };
-};
-
-router.patch('/', (req,res) => {
+router.patch('/', async(req,res) => {
   try {
     console.log('updating post')
-    const thisId = req.body.id
     const newPost = [
       req.body.header,
       req.body.date,
       req.body.body,
     ];
-    const sendPost = editPreppedQuery(newPost, thisId)
-    client.query(sendPost)
+    await editBlogPosts(newPost)
     res.status(200);
     res.send('post updated')
   } catch (err) {
@@ -109,15 +63,7 @@ router.patch('/', (req,res) => {
 
 router.delete('/', async (req,res) => {
   try {
-    const reqId = req.body.id
-    await client.query(
-      `DELETE FROM public.blog_posts WHERE id = ${reqId}`)
-    //console.log({body: req.body, post})
-    //const index = post.findIndex(aPost => aPost.id === req.body.id);
-
-    //post.splice(index, 1); technically correct, but not often used
-    // post = post.filter(aPost => aPost.id !== req.body.id);
-
+    await postDelete(req.body.id)
     res.send('post deleted')
   } catch (err) {
     console.log(err);

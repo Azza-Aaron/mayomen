@@ -11,7 +11,6 @@ function BlogBody() {
   const [showModal, setShowModal] = useState(false)
   const [idForEdit, setIdForEdit] = useState('')
   const getPosts = async () => {
-  //setPost([])
   try {
     const get = await fetch(`/api/blogposts`)
     const post = await get.json()
@@ -31,7 +30,7 @@ function BlogBody() {
       }
     }
   } catch {
-    if(retry < 500){
+    if(retry < 20){
       retry += 1
       getPosts()
     } else {
