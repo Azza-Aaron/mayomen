@@ -23,6 +23,7 @@ const sessionConfig = {
 }
 
 app.use(express.json())
+app.use(session(sessionConfig))
 
 
 //router for /api

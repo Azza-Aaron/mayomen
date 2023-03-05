@@ -92,9 +92,11 @@ router.get('/logout', async (req, res) => {
     req.session.destroy()
     console.log('deleted')
     res.status(200)
+    res.send()
   } catch (e) {
     console.log('delete failed')
     res.status(500)
+    res.send()
   }
 })
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {getBlogPosts, createBlogPost, editBlogPosts, postDelete} = require('../../db/blog')
+const {authGuard} = require("../../middleware");
 
 let posts = []
 
@@ -17,10 +18,11 @@ router.get('/', async (req,res) => {
 })
 
 // api/blogposts/:id <- get one id
-router.get('/:id', (req,res) => {
+/*router.get('/:id', (req,res) => {
   const id = req.params.id; // api/blogposts/1
   //res.send({posts: post})
-})
+})*/
+router.use(authGuard);
 
 router.post('/', async (req, res) => {
   console.log('making new post')
@@ -49,6 +51,7 @@ router.patch('/', async(req,res) => {
       req.body.header,
       req.body.date,
       req.body.body,
+      req.body.id
     ];
     await editBlogPosts(newPost)
     res.status(200);

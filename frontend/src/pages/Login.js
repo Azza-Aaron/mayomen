@@ -51,13 +51,11 @@ export function LoginPage () {
 
     try {
       const login = await fetch(`/api/users/login`, authRequest)
-      console.log (login.json())
+      if(login.status === 200) {
+        setLoggedIn(true)
+      }
     } catch (e) {
       console.log(e)
-    }
-    const authenticated = await checkIfLoggedIn()
-    if(authenticated){
-      setLoggedIn(true)
     }
   }
 
@@ -81,7 +79,7 @@ export function LoginPage () {
           </div>
           <div className="col-9 align-self-center mt-3">
             <h1>Login</h1>
-            <form>
+            <form onSubmit={(e) => e.preventDefault()}>
               <div className="form-group">
                 <label htmlFor="exampleInputEmail1">Username</label>
                 <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"

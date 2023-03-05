@@ -15,7 +15,6 @@ const config = {
 
 const client = new Client(config)
 client.connect();
-
 const pgSes = new pgSession({
   pool: new Pool(config),
   createTableIfMissing: true
