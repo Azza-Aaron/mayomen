@@ -2,10 +2,10 @@
   "name": "src",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
-    "dev": "node server.js --ignore client",
-    "devrun": "nodemon server.js"
+    "dev": "node src/server.js --ignore client",
+    "devrun": "nodemon src/server.js"
   },
   "devDependencies": {
     "bcrypt": "^5.1.0",

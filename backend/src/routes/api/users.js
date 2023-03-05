@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt')
-const session = require('express-session');
-const randomString = require('randomstring')
-const {getSessionId, getPassword} = require('../../db/dbUser')
-const {pgSes} = require("../../db/")
+const {getPassword} = require('../../db/dbUser')
 
 const saltRounds = 10
 //unused function for generating hashed password
@@ -24,23 +21,8 @@ async function generateSessionId(username){
 
 generateSessionId('bill')*/
 
-const secret = process.env.NODE_ENV === 'dev' ? 'aaronsMayoFunhouse' : randomString.generate({
-  length: 14,
-  charset: 'alphanumeric'
-});
 
-//SET UP USER SESSION
-const sessionConfig = {
-  store: pgSes,
-  name: 'SID',
-  secret,
-  resave: false,
-  saveUninitialized: false,
-}
-
-router.use(session(sessionConfig))
-
-router.post('/login',async (req,res,next) => {
+router.post('/login',async (req,res) => {
   console.log('init login (step 1)')
   if(!req.session.user) {
     console.log('not allowed')
@@ -71,7 +53,6 @@ router.post('/login',async (req,res,next) => {
         res.status(200)
         //const user = res.rows
         res.json({user: true, views: req.session.views})
-        next()
       } else {
         console.log('something failed')
         //console.log(result)
@@ -87,10 +68,6 @@ router.post('/login',async (req,res,next) => {
   }
 })
 
-// function isAuthenticated (req, res, next){
-//   if (req.session.user.verified) next()
-//   else next('route')
-// }
 
 router.get('/authenticated', async (req, res) => {
   try{
@@ -108,7 +85,7 @@ router.get('/authenticated', async (req, res) => {
   }
 })
 
-router.get('/delete', async (req, res) => {
+router.get('/logout', async (req, res) => {
   console.log('init delete')
   try {
     console.log('attempting to destroy session')

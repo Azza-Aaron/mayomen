@@ -2,10 +2,13 @@ import React, {useEffect, useState} from "react";
 import {AddPost, editPost, deletePost, deletePostFromServer} from "../../blog_reactive_functions/addEditDelete";
 // import {newEntry} from "../../blog_reactive_functions/submitNewPost";
 import {EditModal} from "../../blog_reactive_functions/modal";
+import {checkIfLoggedIn} from "../../pages/Login"
+import {show} from "react-modal/lib/helpers/ariaAppHider";
 
 let retry = 1
 
 function BlogBody() {
+  const [showButtons, setShowButtons] = useState(false)
   const [post, setPost] = useState([])
   const [showInput, setShowInput] = useState(false)
   const [showModal, setShowModal] = useState(false)
@@ -22,7 +25,7 @@ function BlogBody() {
       retry = 1
     } else {
       console.log('retry')
-      if(retry < 500){
+      if(retry < 20){
         retry += 1
         getPosts()
       } else {
@@ -48,6 +51,10 @@ function BlogBody() {
     setPost(newList)
   }
 
+  const ifAuthSetButtons = async () => {
+    const check = await checkIfLoggedIn()
+    setShowButtons(check)
+  }
 
   const editPost = (id) => {
     setIdForEdit(id)
@@ -59,6 +66,7 @@ function BlogBody() {
     let ignore = false;
     const runOnce = () => {
       if(!ignore){
+        ifAuthSetButtons()
         getPosts()
       }
     }
@@ -82,12 +90,14 @@ function BlogBody() {
           </div>
           <div className={"card-body PaleMayo p-3 darker"}>
             <h4 >{post.body}</h4>
-            <div className="btn-group btn-group-toggle" data-toggle="buttons">
+            { showButtons ? <div className="btn-group btn-group-toggle" data-toggle="buttons">
               <button id={post.id} className={"btn btn-dark PaleMayo p-3 darker"}
-                      onClick={() => editPost(post.id)}>Edit</button>
+                      onClick={() => editPost(post.id)}>Edit
+              </button>
               <button id={post.id} className={"btn btn-dark PaleMayo p-3 darker"}
-                      onClick={() => deletePost(post.id)}>Delete</button>
-            </div>
+                      onClick={() => deletePost(post.id)}>Delete
+              </button>
+            </div> : null}
           </div>
         </div>
       </li>
@@ -107,9 +117,9 @@ function BlogBody() {
           {
             showModal ? <EditModal post={post} id={idForEdit} getPosts={getPosts} setShowModal={setShowModal} setPost={setPost}/> : null
           }
-          <button className={"btn btn-dark"} onClick={() => {
+          { showButtons ? <button className={"btn btn-dark"} onClick={() => {
             setShowInput(!showInput)
-          }}>Add Post</button>
+          }}>Add Post</button> : null}
           <ul className={"list-unstyled"} key={'post-elements'}> { postElements } </ul>
         </div>
         <div className="col">

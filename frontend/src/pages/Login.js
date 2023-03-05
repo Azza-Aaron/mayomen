@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import CookieConsent, { Cookies } from "react-cookie-consent";
 
-const checkIfLoggedIn = async () => {
+export const checkIfLoggedIn = async () => {
   console.log('init check id')
   const checkAuthentication = await fetch(`/api/users/authenticated`)
   const authResult = await checkAuthentication.json()
@@ -32,8 +32,8 @@ export function LoginPage () {
       ignore = true;
     }
   },[])
-  let inputUser
-  let inputPass
+  const [inputUser, setInputUser] = useState("")
+  const [inputPass, setInputPass] = useState("")
 
   const submitDetails = async () => {
     //console.log(inputUser, inputPass)
@@ -62,11 +62,15 @@ export function LoginPage () {
   }
 
   const logout = async () => {
-    setLoggedIn(false)
     console.log('logging out')
-    const deleteConnection = await fetch(`/api/users/delete`)
-    const response = await deleteConnection.json()
-    console.log(response)
+    const deleteConnection = await fetch(`/api/users/logout`)
+    //const response = await deleteConnection.json()
+    console.log(deleteConnection.status)
+    if(deleteConnection.status === 200) {
+      setLoggedIn(false)
+    }else {
+      console.log('error logging out')
+    }
   }
 
   if(loggedIn === false){
@@ -82,7 +86,8 @@ export function LoginPage () {
                 <label htmlFor="exampleInputEmail1">Username</label>
                 <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
                        placeholder="Username" onBlur={(e) => {
-                  inputUser = e.target.value
+                  const inputUser = e.target.value;
+                  setInputUser(inputUser)
                 }} required={true}/>
                 <small id="userHelp" className="form-text text-muted">We'll never share your information with anyone
                   else... Probably.</small>
@@ -91,7 +96,8 @@ export function LoginPage () {
                 <label htmlFor="exampleInputPassword1">Password</label>
                 <input type="password" className="form-control" id="exampleInputPassword1"
                        placeholder="Password" onBlur={(e) => {
-                  inputPass = e.target.value
+                  const inputPass = e.target.value;
+                  setInputPass(inputPass)
                 }} required={true}/>
                 <CookieConsent>This website uses cookies to enhance the user experience.</CookieConsent>
               </div>
